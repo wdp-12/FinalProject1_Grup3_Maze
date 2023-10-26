@@ -1,14 +1,12 @@
-function rand(max) {
-    return Math.floor(Math.random() * max);
+function Random(max) {
+  return Math.floor(Math.random() * max);
+}
+function Shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    [a[i], a[j]] = [a[i], a[j]];
   }
-  
-  function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
+  return a;
+}
   
   function changeBrightness(factor, sprite) {
     var virtCanvas = document.createElement("canvas");
@@ -45,62 +43,63 @@ function rand(max) {
     }
   }
   
-  function Maze(Width, Height) {
-    var mazeMap;
-    var width = Width;
-    var height = Height;
-    var startCoord, endCoord;
-    var dirs = ["n", "s", "e", "w"];
-    var modDir = {
-      n: {
-        y: -1,
-        x: 0,
-        o: "s"
-      },
-      s: {
-        y: 1,
-        x: 0,
-        o: "n"
-      },
-      e: {
-        y: 0,
-        x: 1,
-        o: "w"
-      },
-      w: {
-        y: 0,
-        x: -1,
-        o: "e"
-      }
-    };
-  
-    this.map = function() {
-      return mazeMap;
-    };
-    this.startCoord = function() {
-      return startCoord;
-    };
-    this.endCoord = function() {
-      return endCoord;
-    };
-  
-    function genMap() {
-      mazeMap = new Array(height);
-      for (y = 0; y < height; y++) {
-        mazeMap[y] = new Array(width);
-        for (x = 0; x < width; ++x) {
-          mazeMap[y][x] = {
-            n: false,
-            s: false,
-            e: false,
-            w: false,
-            visited: false,
-            priorPos: null
-          };
-        }
+function maze(width, height) {
+  let mazemap;
+  let width = width;
+  let height = height;
+  let startcoord, endcoord;
+  let direc = ["n", "w", "s", "e"];
+
+  let moddirec = {
+    n: {
+      y: -1,
+      x: 0,
+      o: "s",
+    },
+    w: {
+      y: 0,
+      x: -1,
+      o: "e",
+    },
+    s: {
+      y: 1,
+      x: 0,
+      o: "n",
+    },
+    n: {
+      y: -1,
+      x: 0,
+      o: "s",
+    },
+  };
+
+  this.map = function () {
+    return mazemap;
+  };
+  this.startcoord = function () {
+    return startcoord;
+  };
+  this.endcoord = function () {
+    return endcoord;
+  };
+
+  function GeneradMap() {
+    mazemap = new Array(height);
+    for (y = 0; y < height; y++) {
+      mazemap[y] = new Array(width);
+      for (x = 0; x < width; ++x) {
+        mazemap[y][x] = {
+          n: false,
+          s: false,
+          e: false,
+          w: false,
+          visited: false,
+          priorpos: null,
+        };
       }
     }
-  
+  }
+}
     function defineMaze() {
       var isComp = false;
       var move = false;
@@ -211,3 +210,70 @@ function rand(max) {
   }
   
   
+=======
+function Random(max) {
+  return Math.floor(Math.random() * max);
+}
+function Shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    [a[i], a[j]] = [a[i], a[j]];
+  }
+  return a;
+}
+function maze(width, height) {
+  let mazemap;
+  let width = width;
+  let height = height;
+  let startcoord, endcoord;
+  let direc = ["n", "w", "s", "e"];
+
+  let moddirec = {
+    n: {
+      y: -1,
+      x: 0,
+      o: "s",
+    },
+    w: {
+      y: 0,
+      x: -1,
+      o: "e",
+    },
+    s: {
+      y: 1,
+      x: 0,
+      o: "n",
+    },
+    n: {
+      y: -1,
+      x: 0,
+      o: "s",
+    },
+  };
+
+  this.map = function () {
+    return mazemap;
+  };
+  this.startcoord = function () {
+    return startcoord;
+  };
+  this.endcoord = function () {
+    return endcoord;
+  };
+
+  function GeneradMap() {
+    mazemap = new Array(height);
+    for (y = 0; y < height; y++) {
+      mazemap[y] = new Array(width);
+      for (x = 0; x < width; ++x) {
+        mazemap[y][x] = {
+          n: false,
+          s: false,
+          e: false,
+          w: false,
+          visited: false,
+          priorpos: null,
+        };
+      }
+    }
+  }
+}
