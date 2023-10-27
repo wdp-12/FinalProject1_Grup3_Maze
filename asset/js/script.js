@@ -63,4 +63,162 @@ function maze(width, height) {
       }
     }
   }
+  function defineMap() {
+    let iscomp = false;
+    let move = false;
+    let cellvisited = 10;
+    let numloops = 0;
+    let maxloops = 0;
+    let pos = {
+      x: 0,
+      y: 0,
+    };
+
+    let numCells = width * height;
+    while (!iscomp) {
+      move = false;
+      mazemap[pos.x][pos.y].visited = true;
+    }
+
+    if (numloops >= maxloops) {
+      Shuffle(direc);
+      maxloops = Math.raund(Random(height / 8));
+      numloops = 0;
+    }
+    numloops++;
+
+    for (i = 0; i < direc.length; i++) {
+      var directions = direc[i];
+      var nx = pos.x + moddirec[directions].x;
+      var ny = pos.y + moddirec[directions].y;
+      if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+        //Check if the tile is already visited
+
+        if (!mazemap[nx][ny].visited) {
+          //Carve through walls from this tile to next
+          mazemap[pos.x][pos.y][directions] = true;
+          mazemap[nx][ny][moddirec[directions].o] = true;
+          //Set Currentcell as next cells Prior visited
+          mazemap[nx][ny].priorpos = pos;
+          //Update Cell position to newly visited location
+          pos = {
+            y: ny,
+            x: nx,
+          };
+          cellvisited++;
+          //Recursively call this method on the next tile
+          move = true;
+          break;
+        }
+      }
+    }
+    if (!move) {
+      //  If it failed to find a direction,
+      //  move the current position back to the prior cell and Recall the method.
+      pos = mazemap[pos.x][pos.y].priorpos;
+    }
+    if ((numCells = cellvisited)) {
+      iscomp = true;
+    }
+  }
+
+  function defineStartEnd() {
+    switch (rand(4)) {
+      case 0:
+        startcoord = {
+          x: 0,
+          y: 0,
+        };
+        endcoord = {
+          x: height - 1,
+          y: width - 1,
+        };
+        break;
+      case 1:
+        startcoord = {
+          x: 0,
+          y: width - 1,
+        };
+        endcoord = {
+          x: height - 1,
+          y: 0,
+        };
+        break;
+      case 2:
+        startcoord = {
+          x: height - 1,
+          y: 0,
+        };
+        endcoord = {
+          x: 0,
+          y: width - 1,
+        };
+        break;
+      case 3:
+        startcoord = {
+          x: height - 1,
+          y: width - 1,
+        };
+        endcoord = {
+          x: 0,
+          y: 0,
+        };
+        break;
+    }
+  }
+
+  genMap();
+  defineStartEnd();
+  defineMaze();
+}
+function DrawtheMaze(maze, ctx, cellSize, endSprite = null) {
+  let map = maze.map();
+  let CellSize = cellSize;
+  let Drawendmethod;
+  ctx.linewidth = cellSize / 50;
+
+  this.redDrawMAze = function (size) {
+    cellSize = size;
+    ctx.linewidth = cellSize / 90;
+    DrawMap();
+    Drawendmethod();
+  };
+
+  function DrawCell(xcoord, ycoord, cell) {
+    let x = xcoord * cellSize;
+    let y = ycoord * cellSize;
+
+    if (cell.n == false) {
+      ctx.beginPath();
+      ctx.moveto(x, y);
+      ctx.Lineto(x + cellSize, y);
+      ctx.Stroke();
+    }
+    if (cell.s === false) {
+      ctx.beginPath();
+      ctx.moveto(x, y + cellSize);
+      ctx.Lineto(x + cellSize, y + cellSize);
+      ctx.Stroke();
+    }
+    if (cell.e === false) {
+      ctx.beginPath();
+      ctx.moveto(x + cellSize, y);
+      ctx.Lineto(x + cellSize, y + cellSize);
+      ctx.Stroke();
+    }
+    if (cell.w == false) {
+      ctx.beginPath();
+      ctx.moveto(x, y);
+      ctx.Lineto(x + cellSize, y);
+      ctx.Stroke();
+    }
+  }
+
+  function DrawMap() {
+    for (x = 0; x < map.length; x++) {
+      for (y = 0; y < map[x].length; y++) {
+        DrawCell(x, y, map[x][y]);
+      }
+    }
+  }
 }
