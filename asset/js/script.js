@@ -3,7 +3,8 @@ function Random(max) {
 }
 function Shuffle(a) {
   for (let i = a.length - 1; i > 0; i--) {
-    [a[i], a[j]] = [a[i], a[j]];
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
@@ -45,12 +46,12 @@ function toggleVisablity(id) {
 
 function maze(width, height) {
   let mazemap;
-  let width = width;
-  let height = height;
+  let Width = width;
+  let Height = height;
   let startcoord, endcoord;
   let direc = ["n", "w", "s", "e"];
 
-  let moddirec = {
+  var moddirec = {
     n: {
       y: -1,
       x: 0,
@@ -66,10 +67,10 @@ function maze(width, height) {
       x: 0,
       o: "n",
     },
-    n: {
-      y: -1,
-      x: 0,
-      o: "s",
+    e: {
+      y: 0,
+      x: 1,
+      o: "w",
     },
   };
 
@@ -84,10 +85,10 @@ function maze(width, height) {
   };
 
   function GeneradMap() {
-    mazemap = new Array(height);
-    for (y = 0; y < height; y++) {
-      mazemap[y] = new Array(width);
-      for (x = 0; x < width; ++x) {
+    mazemap = new Array(Height);
+    for (y = 0; y < Height; y++) {
+      mazemap[y] = new Array(Width);
+      for (x = 0; x < Width; ++x) {
         mazemap[y][x] = {
           n: false,
           s: false,
@@ -102,7 +103,7 @@ function maze(width, height) {
   function defineMaze() {
     let iscomp = false;
     let move = false;
-    let cellvisited = 10;
+    let cellvisited = 1;
     let numloops = 0;
     let maxloops = 0;
     let pos = {
@@ -110,56 +111,56 @@ function maze(width, height) {
       y: 0,
     };
 
-    let numCells = width * height;
+    var numCells = Width * Height;
     while (!iscomp) {
       move = false;
       mazemap[pos.x][pos.y].visited = true;
-    }
 
-    if (numloops >= maxloops) {
-      Shuffle(direc);
-      maxloops = Math.raund(Random(height / 8));
-      numloops = 0;
-    }
-    numloops++;
+      if (numloops >= maxloops) {
+        Shuffle(direc);
+        maxloops = Math.round(Random(height / 8));
+        numloops = 0;
+      }
+      numloops++;
 
-    for (i = 0; i < direc.length; i++) {
-      var directions = direc[i];
-      var nx = pos.x + moddirec[directions].x;
-      var ny = pos.y + moddirec[directions].y;
-      if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-        //Check if the tile is already visited
+      for (index = 0; index < direc.length; index++) {
+        var directions = direc[index];
+        var nx = pos.x + moddirec[directions].x;
+        var ny = pos.y + moddirec[directions].y;
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+          //Check if the tile is already visited
 
-        if (!mazemap[nx][ny].visited) {
-          //Carve through walls from this tile to next
-          mazemap[pos.x][pos.y][directions] = true;
-          mazemap[nx][ny][moddirec[directions].o] = true;
-          //Set Currentcell as next cells Prior visited
-          mazemap[nx][ny].priorpos = pos;
-          //Update Cell position to newly visited location
-          pos = {
-            y: ny,
-            x: nx,
-          };
-          cellvisited++;
-          //Recursively call this method on the next tile
-          move = true;
-          break;
+          if (!mazemap[nx][ny].visited) {
+            //Carve through walls from this tile to next
+            mazemap[pos.x][pos.y][directions] = true;
+            mazemap[nx][ny][moddirec[directions].o] = true;
+            //Set Currentcell as next cells Prior visited
+            mazemap[nx][ny].priorpos = pos;
+            //Update Cell position to newly visited location
+            pos = {
+              x: nx,
+              y: ny,
+            };
+            cellvisited++;
+            //Recursively call this method on the next tile
+            move = true;
+            break;
+          }
         }
       }
-    }
-    if (!move) {
-      //  If it failed to find a direction,
-      //  move the current position back to the prior cell and Recall the method.
-      pos = mazemap[pos.x][pos.y].priorpos;
-    }
-    if ((numCells = cellvisited)) {
-      iscomp = true;
+      if (!move) {
+        //  If it failed to find a direction,
+        //  move the current position back to the prior cell and Recall the method.
+        pos = mazemap[pos.x][pos.y].priorpos;
+      }
+      if (numCells == cellvisited) {
+        iscomp = true;
+      }
     }
   }
 
   function defineStartEnd() {
-    switch (rand(4)) {
+    switch (Random(4)) {
       case 0:
         startcoord = {
           x: 0,
@@ -212,42 +213,42 @@ function DrawtheMaze(maze, ctx, cellSize, endSprite = null) {
   let map = maze.map();
   let CellSize = cellSize;
   let Drawendmethod;
-  ctx.linewidth = cellSize / 50;
+  ctx.linewidth = CellSize / 40;
 
   this.redDrawMAze = function (size) {
-    cellSize = size;
-    ctx.linewidth = cellSize / 90;
+    CellSize = size;
+    ctx.linewidth = CellSize / 50;
     DrawMap();
     Drawendmethod();
   };
 
   function DrawCell(xcoord, ycoord, cell) {
-    let x = xcoord * cellSize;
-    let y = ycoord * cellSize;
+    var x = xcoord * CellSize;
+    var y = ycoord * CellSize;
 
     if (cell.n == false) {
       ctx.beginPath();
-      ctx.moveto(x, y);
-      ctx.Lineto(x + cellSize, y);
-      ctx.Stroke();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + CellSize, y);
+      ctx.stroke();
     }
     if (cell.s === false) {
       ctx.beginPath();
-      ctx.moveto(x, y + cellSize);
-      ctx.Lineto(x + cellSize, y + cellSize);
-      ctx.Stroke();
+      ctx.moveTo(x, y + CellSize);
+      ctx.lineTo(x + CellSize, y + CellSize);
+      ctx.stroke();
     }
     if (cell.e === false) {
       ctx.beginPath();
-      ctx.moveto(x + cellSize, y);
-      ctx.Lineto(x + cellSize, y + cellSize);
-      ctx.Stroke();
+      ctx.moveTo(x + CellSize, y);
+      ctx.lineTo(x + CellSize, y + CellSize);
+      ctx.stroke();
     }
     if (cell.w == false) {
       ctx.beginPath();
-      ctx.moveto(x, y);
-      ctx.Lineto(x + cellSize, y);
-      ctx.Stroke();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + CellSize);
+      ctx.stroke();
     }
   }
 
@@ -257,5 +258,24 @@ function DrawtheMaze(maze, ctx, cellSize, endSprite = null) {
         DrawCell(x, y, map[x][y]);
       }
     }
+  }
+}
+
+var mazeCanvas = document.getElementById("mazeCanvas");
+var ctx = mazeCanvas.getContext("2d");
+var sprite;
+var finishSprite;
+var Maze, draw;
+var cellSize;
+var difficulty;
+
+function makeMaze() {
+  var e = document.getElementById("diffSelect");
+  difficulty = e.options[e.selectedIndex].value;
+  cellSize = mazeCanvas.width / difficulty;
+  Maze = new maze(difficulty, difficulty);
+  draw = new DrawtheMaze(Maze, ctx, cellSize, finishSprite);
+  if (document.getElementById("mazeContainer").style.opacity < "100") {
+    document.getElementById("mazeContainer").style.opacity = "100";
   }
 }
