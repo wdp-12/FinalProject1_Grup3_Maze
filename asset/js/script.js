@@ -259,13 +259,228 @@ function DrawtheMaze(maze, ctx, cellSize, endSprite = null) {
       }
     }
   }
+
+  function DrawEndFlag() {
+    var coord = maze.endcoord();
+    var gridsize = 4;
+    var franctions = CellSize / gridsize - 2;
+    var colorSwap = true;
+
+    for (let y = 0; y < gridsize; y++) {
+      if (gridsize % 2 == 0) {
+        colorSwap = !colorSwap;
+      }
+      for (let x = 0; x < gridsize; x++) {
+        ctx.beginPath();
+        ctx.rect(
+          coord.x * CellSize + x * franctions + 4.5,
+          coord.y * CellSize + y * franctions + 4.5,
+          franctions,
+          franctions
+        );
+        if (colorSwap) {
+          ctx.fillStyle = "rgba(0,0,0,0.8)";
+        } else {
+          ctx.fillStyle = "rgba(255,255,255,0.8 )";
+        }
+        ctx.fill();
+        colorSwap = !colorSwap;
+      }
+    }
+  }
+
+  function DrawEndSprite() {
+    var offsetright = CellSize / 50;
+    var offsetleft = CellSize / 25;
+    var coord = maze.endcoord();
+    ctx.drawImage(
+      endSprite,
+      2,
+      2,
+      endSprite.width,
+      endSprite.height,
+      coord.x * CellSize + offsetleft,
+      coord.y * CellSize + offsetleft,
+      CellSize - offsetright,
+      CellSize - offsetright
+    );
+  }
+  function clear() {
+    let canvasSize = CellSize * map.length;
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+  }
+  if (endSprite != null) {
+    Drawendmethod = DrawEndSprite;
+  } else {
+    Drawendmethod = DrawEndFlag;
+  }
+  clear();
+  DrawMap();
+  Drawendmethod();
 }
 
+function Players(maze, c, _cellsize, onComplite, sprite = null) {
+  let ctx = c.getContext("2d");
+  let DrawSprite;
+  let moves = 0;
+
+  DrawSprite = DrawSpriteCircle;
+  if (sprite != null) {
+    DrawSprite = DrawSpriteImg;
+  }
+  let player = this;
+  let map = maze.map();
+  let cellCoords = {
+    x: maze.startcoord().x,
+    y: maze.startcoord().y,
+  };
+  let cellSize = _cellsize;
+  let halfCellSize = cellSize / 2;
+
+  this.redDrawPlayer = function (_cellsize) {
+    cellSize = _cellsize;
+    DrawSpriteImg(cellCoord);
+  };
+
+  function DrawSpriteCircle(coord) {
+    ctx.beginPath();
+    ctx.fillStyle = "red";
+    ctx.arc(
+      (coord.x + 1) * cellSize - halfCellSize,
+      (coord.y + 1) * cellSize - halfCellSize,
+      halfCellSize - 2,
+      0,
+      2 * Math.PI
+    );
+    ctx.fill();
+    if (coord.x === maze.endcoord().x && coord.y === maze.endcoord().y) {
+      onComplite(moves);
+      player.unbindkeyDown();
+    }
+  }
+
+  function DrawSpriteImg(coord) {
+    let offsetleft = cellSize / 50;
+    let offsetright = cellSize / 25;
+    ctx.drawImage(
+      sprite,
+      0,
+      0,
+      sprite.Width,
+      sprite.Height,
+      coord.x * cellSize + offsetleft,
+      coord.y * cellSize + offsetleft,
+      cellSize - offsetright,
+      cellSize - offsetright
+    );
+    if (coord.x === maze.endcoord().x && coord.y === maze.endcoord().y) {
+      onComplite(moves);
+      player.unbindkeyDown();
+    }
+  }
+
+  function removeSprite(coord) {
+    let offsetLeft = cellSize / 50;
+    let offsetRight = cellSize / 25;
+    ctx.clearRect(
+      coord.x * cellSize + offsetLeft,
+      coord.y * cellSize + offsetLeft,
+      cellSize - offsetRight,
+      cellSize - offsetRight
+    );
+  }
+
+  function check(e) {
+    var cell = map[cellCoords.x][cellCoords.y];
+    moves++;
+    switch (e.keyCode) {
+      case 1:
+      case 37: //west
+        if (cell.w == true) {
+          removeSprite(cellCoords);
+          cellCoords = {
+            x: cellCoords.x - 1,
+            y: cellCoords.y,
+          };
+          DrawSprite(cellCoords);
+        }
+        break;
+      case 2:
+      case 38:
+        if (cell.n == true) {
+          removeSprite(cellCoords);
+          cellCoords = {
+            x: cellCoords.x,
+            y: cellCoords.y - 1,
+          };
+          DrawSprite(cellCoords);
+        }
+      case 3:
+      case 39:
+        if (cell.e == true) {
+          removeSprite(cellCoords);
+          cellCoords = {
+            x: cellCoords.x + 1,
+            y: cellCoords.y,
+          };
+          DrawSprite(cellCoords);
+        }
+      case 4:
+      case 40:
+        if (cell.s == true) {
+          removeSprite(cellCoords);
+          cellCoords = {
+            x: cellCoords.x,
+            y: cellCoords.y + 1,
+          };
+          DrawSprite(cellCoords);
+        }
+        break;
+    }
+  }
+  this.bindKeyDown = function () {
+    window.addEventListener("keydown", check, false);
+    $("#view").swipe({
+      swipe: function (direction) {
+        console.log(direction);
+        switch (direction) {
+          case "up":
+            check({
+              keyCode: 38,
+            });
+            break;
+          case "down":
+            check({
+              keyCode: 40,
+            });
+            break;
+          case "left":
+            check({
+              keyCode: 37,
+            });
+            break;
+          case "right":
+            check({
+              keyCode: 39,
+            });
+            break;
+        }
+      },
+      threshold: 0,
+    });
+  };
+  this.unbindkeyDown = function () {
+    window.removeEventListener("keydown", check, false);
+    $("#view").swipe("destroy");
+  };
+  DrawSprite(maze.startcoord());
+  this.bindKeyDown();
+}
 var mazeCanvas = document.getElementById("mazeCanvas");
 var ctx = mazeCanvas.getContext("2d");
 var sprite;
 var finishSprite;
-var Maze, draw;
+var Maze, draw, player;
 var cellSize;
 var difficulty;
 
@@ -275,6 +490,8 @@ function makeMaze() {
   cellSize = mazeCanvas.width / difficulty;
   Maze = new maze(difficulty, difficulty);
   draw = new DrawtheMaze(Maze, ctx, cellSize, finishSprite);
+  player = new Players(Maze, mazeCanvas, cellSize, displayVictoryMess, sprite);
+
   if (document.getElementById("mazeContainer").style.opacity < "100") {
     document.getElementById("mazeContainer").style.opacity = "100";
   }
