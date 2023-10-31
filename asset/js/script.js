@@ -128,29 +128,22 @@ function maze(width, height) {
         var nx = pos.x + moddirec[directions].x;
         var ny = pos.y + moddirec[directions].y;
         if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-          //Check if the tile is already visited
 
           if (!mazemap[nx][ny].visited) {
-            //Carve through walls from this tile to next
             mazemap[pos.x][pos.y][directions] = true;
             mazemap[nx][ny][moddirec[directions].o] = true;
-            //Set Currentcell as next cells Prior visited
             mazemap[nx][ny].priorpos = pos;
-            //Update Cell position to newly visited location
             pos = {
               x: nx,
               y: ny,
             };
             cellvisited++;
-            //Recursively call this method on the next tile
             move = true;
             break;
           }
         }
       }
       if (!move) {
-        //  If it failed to find a direction,
-        //  move the current position back to the prior cell and Recall the method.
         pos = mazemap[pos.x][pos.y].priorpos;
       }
       if (numCells == cellvisited) {
@@ -366,8 +359,8 @@ function Players(maze, c, _cellsize, onComplete, sprite = null) {
       sprite,
       0,
       0,
-      sprite.Width,
-      sprite.Height,
+      sprite.width,
+      sprite.height,
       coord.x * cellSize + offsetleft,
       coord.y * cellSize + offsetleft,
       cellSize - offsetright,
@@ -395,7 +388,7 @@ function Players(maze, c, _cellsize, onComplete, sprite = null) {
     moves++;
     switch (e.keyCode) {
       case 1:
-      case 37: //west
+      case 37: 
         if (cell.w == true) {
           removeSprite(cellCoords);
           cellCoords = {
@@ -502,3 +495,125 @@ function makeMaze() {
     document.getElementById("mazeContainer").style.opacity = "100";
   }
 }
+
+
+window.onload = function () {
+  let viewWidth = $("#view").width();
+  let viewHeight = $("#view").height();
+  if (viewHeight < viewWidth) {
+    ctx.canvas.width = viewHeight - viewHeight / 100;
+    ctx.canvas.height = viewHeight - viewHeight / 100;
+  } else {
+    ctx.canvas.width = viewWidth - viewWidth / 100;
+    ctx.canvas.height = viewWidth - viewWidth / 100;
+  }
+
+  //Load and edit sprites
+  var completeOne = false;
+  var completeTwo = false;
+  var isComplete = () => {
+    if (completeOne === true && completeTwo === true) {
+      console.log("Runs");
+      setTimeout(function () {
+        makeMaze();
+      }, 500);
+    }
+  };
+  sprite = new Image();
+  sprite.src = "./asset/img/key.png" + "?" + new Date().getTime();
+  sprite.setAttribute("crossOrigin", " ");
+  sprite.onload = function () {
+    sprite = changeBrightness(1.2, sprite);
+    completeOne = true;
+    console.log(completeOne);
+    isComplete();
+  };
+
+  finishSprite = new Image();
+  finishSprite.src = "./asset/img/home.png" + "?" + new Date().getTime();
+  finishSprite.setAttribute("crossOrigin", " ");
+  finishSprite.onload = function () {
+    finishSprite = changeBrightness(1.1, finishSprite);
+    completeTwo = true;
+    console.log(completeTwo);
+    isComplete();
+  };
+};
+
+window.onresize = function () {
+  let viewWidth = $("#view").width();
+  let viewHeight = $("#view").height();
+  if (viewHeight < viewWidth) {
+    ctx.canvas.width = viewHeight - viewHeight / 100;
+    ctx.canvas.height = viewHeight - viewHeight / 100;
+  } else {
+    ctx.canvas.width = viewWidth - viewWidth / 100;
+    ctx.canvas.height = viewWidth - viewWidth / 100;
+  }
+  cellSize = mazeCanvas.width / difficulty;
+  if (player != null) {
+    draw.redDrawMAze(cellSize);
+    player.redDrawPlayer(cellSize);
+  }
+};
+
+
+window.onload = function () {
+  let viewWidth = $("#view").width();
+  let viewHeight = $("#view").height();
+  if (viewHeight < viewWidth) {
+    ctx.canvas.width = viewHeight - viewHeight / 100;
+    ctx.canvas.height = viewHeight - viewHeight / 100;
+  } else {
+    ctx.canvas.width = viewWidth - viewWidth / 100;
+    ctx.canvas.height = viewWidth - viewWidth / 100;
+  }
+
+  //Load and edit sprites
+  var completeOne = false;
+  var completeTwo = false;
+  var isComplete = () => {
+    if (completeOne === true && completeTwo === true) {
+      console.log("Runs");
+      setTimeout(function () {
+        makeMaze();
+      }, 500);
+    }
+  };
+  sprite = new Image();
+  sprite.src = "./asset/img/key.png" + "?" + new Date().getTime();
+  sprite.setAttribute("crossOrigin", " ");
+  sprite.onload = function () {
+    sprite = changeBrightness(1.2, sprite);
+    completeOne = true;
+    console.log(completeOne);
+    isComplete();
+  };
+
+  finishSprite = new Image();
+  finishSprite.src = "./asset/img/home.png" + "?" + new Date().getTime();
+  finishSprite.setAttribute("crossOrigin", " ");
+  finishSprite.onload = function () {
+    finishSprite = changeBrightness(1.1, finishSprite);
+    completeTwo = true;
+    console.log(completeTwo);
+    isComplete();
+  };
+};
+
+window.onresize = function () {
+  let viewWidth = $("#view").width();
+  let viewHeight = $("#view").height();
+  if (viewHeight < viewWidth) {
+    ctx.canvas.width = viewHeight - viewHeight / 100;
+    ctx.canvas.height = viewHeight - viewHeight / 100;
+  } else {
+    ctx.canvas.width = viewWidth - viewWidth / 100;
+    ctx.canvas.height = viewWidth - viewWidth / 100;
+  }
+  cellSize = mazeCanvas.width / difficulty;
+  if (player != null) {
+    draw.redDrawMAze(cellSize);
+    player.redDrawPlayer(cellSize);
+  }
+};
