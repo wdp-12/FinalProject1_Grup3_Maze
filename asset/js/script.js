@@ -319,7 +319,7 @@ function DrawtheMaze(maze, ctx, cellSize, endSprite = null) {
   Drawendmethod();
 }
 
-function Players(maze, c, _cellsize, onComplite, sprite = null) {
+function Players(maze, c, _cellsize, onComplete, sprite = null) {
   let ctx = c.getContext("2d");
   let DrawSprite;
   let moves = 0;
@@ -339,7 +339,7 @@ function Players(maze, c, _cellsize, onComplite, sprite = null) {
 
   this.redDrawPlayer = function (_cellsize) {
     cellSize = _cellsize;
-    DrawSpriteImg(cellCoord);
+    DrawSpriteImg(cellCoords);
   };
 
   function DrawSpriteCircle(coord) {
@@ -354,7 +354,7 @@ function Players(maze, c, _cellsize, onComplite, sprite = null) {
     );
     ctx.fill();
     if (coord.x === maze.endcoord().x && coord.y === maze.endcoord().y) {
-      onComplite(moves);
+      onComplete(moves);
       player.unbindkeyDown();
     }
   }
@@ -374,7 +374,7 @@ function Players(maze, c, _cellsize, onComplite, sprite = null) {
       cellSize - offsetright
     );
     if (coord.x === maze.endcoord().x && coord.y === maze.endcoord().y) {
-      onComplite(moves);
+      onComplete(moves);
       player.unbindkeyDown();
     }
   }
@@ -415,6 +415,7 @@ function Players(maze, c, _cellsize, onComplite, sprite = null) {
           };
           DrawSprite(cellCoords);
         }
+        break;
       case 3:
       case 39:
         if (cell.e == true) {
@@ -425,6 +426,7 @@ function Players(maze, c, _cellsize, onComplite, sprite = null) {
           };
           DrawSprite(cellCoords);
         }
+        break;
       case 4:
       case 40:
         if (cell.s == true) {
@@ -485,6 +487,10 @@ var cellSize;
 var difficulty;
 
 function makeMaze() {
+  if (player != undefined) {
+    player.unbindkeyDown();
+    player = null;
+  }
   var e = document.getElementById("diffSelect");
   difficulty = e.options[e.selectedIndex].value;
   cellSize = mazeCanvas.width / difficulty;
