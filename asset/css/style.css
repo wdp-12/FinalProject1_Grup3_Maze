@@ -21,7 +21,14 @@ body {
 
 #view {
   margin-top: 30px;
+  width: 100%;
 }
+
+#view canvas {
+    border-radius: 10px;
+    border: 2px solid black;
+    zoom: 1;
+  }
 
 #mazeContainer {
   top: 15px;
@@ -33,7 +40,6 @@ body {
 #mazeContainer #mazeCanvas {
   margin: 0;
   display: block;
-  border: solid 2px black;
   height: 400px;
 }
 
@@ -140,9 +146,26 @@ select:focus {
   margin-top: 425px;
 }
 
+.audio-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .audio-control {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    margin-right: 10px;
+  }
+  
+
+
 @media only screen and (max-width: 400px) {
   input,
   select {
     width: 120px;
   }
 }
+

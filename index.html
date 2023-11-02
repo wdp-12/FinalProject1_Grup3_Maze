@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Find Me Home</title>
     <link rel="stylesheet" href="asset/css/style.css" />
@@ -53,7 +53,19 @@
       </div>
 
       <p id="instructions">Use arrow keys to move the key to the house!</p>
-    </div>
+
+    <!-- Elemen audio dengan ID "music" -->
+<audio controls id="music">
+  <source src="asset/audio/gamemusic-6082.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+
+    <!-- Elemen audio kedua dengan ID "congrats" -->
+    <audio controls id="congrats">
+      <source src="asset/audio/tada-fanfare-a-6313.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
 
     <script
       type="text/javascript"
