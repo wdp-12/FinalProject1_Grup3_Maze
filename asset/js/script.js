@@ -33,6 +33,8 @@ function changeBrightness(factor, sprite) {
 
 function displayVictoryMess(moves) {
   document.getElementById("moves").innerHTML = "You Moved " + moves + " Steps.";
+  document.getElementById('congrats').play();
+  document.getElementById('music').pause(); // Menghentikan musik
   toggleVisablity("Message-Container");
 }
 
@@ -479,6 +481,13 @@ var Maze, draw, player;
 var cellSize;
 var difficulty;
 
+function setupAudio() {
+  const music = document.getElementById("music");
+  music.loop = true;
+  music.play();
+}
+
+
 function makeMaze() {
   if (player != undefined) {
     player.unbindkeyDown();
@@ -494,6 +503,7 @@ function makeMaze() {
   if (document.getElementById("mazeContainer").style.opacity < "100") {
     document.getElementById("mazeContainer").style.opacity = "100";
   }
+  setupAudio(); // Memanggil fungsi untuk memulai musik
 }
 
 
@@ -517,6 +527,7 @@ window.onload = function () {
       setTimeout(function () {
         makeMaze();
       }, 500);
+      setupAudio(); 
     }
   };
   sprite = new Image();
